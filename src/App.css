@@ -1,0 +1,47 @@
+.App {
+  text-align: center;
+  height: 100%;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  height: 100%;
+}
+
+.title-overlay {
+  color: white !important;
+  background: blue !important;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.title-overlay-big {
+  color: white !important;
+  background: darkblue !important;
+  /* color: black !important; */
+  font-size: 1.5vw;
+  font-weight: bold;
+  opacity: 0.6 !important;
+  border: 2px solid darkviolet !important;
+}
+
+.title-overlay-modal {
+  color: white !important;
+  background: darkblue !important;
+  /* color: black !important; */
+  font-size: 3vw;
+  font-weight: bold;
+  opacity: 0.6 !important;
+  border: 2px solid darkviolet !important;
+}
+
+.overlay-hide {
+  display: none !important;
+}
