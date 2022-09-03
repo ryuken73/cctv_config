@@ -28,15 +28,6 @@ const CCTVList = styled.div`
 `
 
 const Column = props => {
-    // console.log('#### re-render Column:', props.column)
-    // const {title, column, cctvs, columnData} = props;
-    // const {setColumnData=()=>{}} = props;
-    // const {cctvIds} = column;
-    // const [columnItems, setColumnItems] = React.useState([]);
-    // React.useEffect(() => {
-        // const cctvsInColumn = cctvIds.map(cctvId => cctvs.find(cctv => cctv.cctvId === cctvId))
-        // setColumnItems(cctvsInColumn);
-    // },[cctvIds, cctvs])
     const {
         columnName, 
         columnItems,
@@ -100,6 +91,5 @@ const Column = props => {
         </Container>
     )
 }
-
 
 export default React.memo(Column)

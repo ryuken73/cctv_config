@@ -7,19 +7,6 @@ import Fade from '@mui/material/Fade';
 import Zoom from '@mui/material/Zoom';
 import Grow from '@mui/material/Grow';
 
-// const useStyles = makeStyles((theme) => ({
-//   paper: props => ({
-//     margin: 'auto',
-//     height: props.contentHeight || "80%",
-//     width: props.contentWidth || "90%",
-//     // backgroundColor: theme.palette.background.paper,
-//     backgroundColor: props.autoPlay ? "maroon" : "white",
-//     border: '2px solid #000',
-//     boxShadow: theme.shadows[100],
-//     padding: theme.spacing(0.5),
-//   }),
-// }));
-
 const TRANSLATE_RATIO_MAP = {
   2 : ['-50%', '50%'],
   3 : ['-50%', '0%', '50%']
