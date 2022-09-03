@@ -8,6 +8,12 @@ import Box from '@mui/material/Box';
 import { useHotkeys } from 'react-hotkeys-hook';
 import useLocalStorage from './hooks/useLocalStorage';
 import useAutoPlay from './hooks/useAutoPlay';
+import styled from 'styled-components';
+
+const CenterAligned = styled.div`
+  padding-top: 50%;
+  padding-left: 50%;
+`
  
 const mirrorModalPlayer = (playerNode, modalPlayer) => {
   const videoElement =  playerNode.querySelector('video');
@@ -70,10 +76,6 @@ function App() {
   const gridNumNormalized = getRealIndex(currentGridNum, gridDimension, cctvsSelectedArray)
 
   const maximizeGrid = React.useCallback(gridNum => {
-    // const totalGridNum = gridDimension * gridDimension;
-    // const safeMaxIndex = Math.min(totalGridNum, cctvsSelectedArray.length);
-    // console.log('maximizeGrid gridNum=', gridNum);
-    // const cctv = cctvsSelectedArray[gridNum % safeMaxIndex];
     const realIndex = getRealIndex(gridNum, gridDimension, cctvsSelectedArray)
     const cctv = cctvsSelectedArray[realIndex];
     const cctvId = cctv.cctvId;
@@ -128,7 +130,10 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Box width="100%" height="100%">
+        <Box width="100%" height="100%" overflow="hidden">
+          {!modalOpen && cctvsSelectedArray.length === 0 &&
+            <Box sx={{marginTop: '30px'}}>Press "c" to manage cctv urls.</Box>
+          }
           <GridVideos
             setPlayer={setLeftSmallPlayerRef.current}
             cctvsSelected={cctvsSelectedArray}

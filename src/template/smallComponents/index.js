@@ -41,8 +41,6 @@ const SmallButton  = styled(Button)`
     &:active {
         background-color: ${props => props.activeColor};
     }
-
-
 `
 
 const SmallMarginTextField = styled(TextField)`

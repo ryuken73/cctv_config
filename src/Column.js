@@ -43,7 +43,8 @@ const Column = props => {
         checkedCCTVId,
         setCheckedCCTVId,
         setCCTVs,
-        moveAllCCTVs
+        moveAllCCTVs,
+        setChanged
     } = props;
     console.log(columnName, columnItems)
 
@@ -89,6 +90,7 @@ const Column = props => {
                                 checked={cctv.cctvId === checkedCCTVId}
                                 setChecked={setCheckedCCTV}
                                 setCCTVs={setCCTVs}
+                                setChanged={setChanged}
                             />
                         ))}
                         {provided.placeholder}

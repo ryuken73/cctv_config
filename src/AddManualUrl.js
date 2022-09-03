@@ -28,7 +28,8 @@ function AddManualUrl(props) {
     checkedCCTVId, 
     checkedInSelected, 
     setCCTVsNotSelectedArray, 
-    setCCTVsSelectedArray
+    setCCTVsSelectedArray,
+    setChanged
   } = props;
   const [url, setUrl] = React.useState('');
   const [title, setTitle] = React.useState('');
@@ -88,6 +89,7 @@ function AddManualUrl(props) {
             title
           })
         })
+        setChanged(true);
         return;
       } else {
         setCCTVsNotSelectedArray(cctvs => {
@@ -98,6 +100,7 @@ function AddManualUrl(props) {
             title
           })
         })
+        setChanged(true);
         return;
       }
     }
@@ -116,6 +119,7 @@ function AddManualUrl(props) {
     setCCTVsNotSelectedArray(cctvs => {
       return [...cctvs, newCCTV]
     })
+    setChanged(true);
   },[checkedCCTVId, allCCTVs, url, title, setCCTVsNotSelectedArray, checkedInSelected, setCCTVsSelectedArray])
 
   return (

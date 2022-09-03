@@ -1,5 +1,6 @@
 import React from 'react';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -13,6 +14,7 @@ import Column from './Column';
 import AddManualUrl from './AddManualUrl';
 import { DragDropContext } from 'react-beautiful-dnd';
 import {moveTo, remove, add} from './lib/arrayUtil';
+import axios from 'axios';
 
 const scroll = 'paper';
 const columnNames =  ['dragFrom', 'dropOn'];
@@ -20,7 +22,6 @@ const columnNames =  ['dragFrom', 'dropOn'];
 const ConfigDialog = props => {
     const {
         open=false,
-        // cctvs=[],
         cctvsNotSelected=[],
         cctvsSelected=[],
         setCCTVsSelectedAray,
@@ -28,30 +29,37 @@ const ConfigDialog = props => {
         setDialogOpen=()=>{},
         checkedCCTVId,
         setCheckedCCTVId,
-
         optionTitle="Select CCTVs",
-        // columnData={},
-        // columnOrder=[],
-        // setColumnData=()=>{},
-        // groupByArea=true,
         displayGrid=true,
         gridDimension=2,
         autoInterval=10,
-        // setGroupByArea=()=>{},
         preload=false,
         setOptionsNSave=()=>{},
-        addManualUrl
-        // setPreload=()=>{}
-        // cctvsInDropOn=[]
     } = props;
+    
+    const [changed, setChanged] = React.useState(false);
+    const disableSaveBtn = !changed;
 
-    // const [columnItems, setColumnItems] = React.useState({});
-    // React.useEffect(() => {
-    //     setColumnItems({
-    //         'dragFrom': [...cctvsNotSelected],
-    //         'dropOn': [...cctvsSelected]
-    //     })
-    // }, [cctvsNotSelected, cctvsSelected])
+    React.useEffect(() => {
+        axios.get('/extUrl/latest')
+        .then(res => {
+            const cctvsFromRemote = res.data;
+            const cctvNotSelectedByLatest = cctvsFromRemote.reduce((acct, cctv) => {
+                const isInSelected = cctvsSelected.find(selectedCCTV => selectedCCTV.cctvId === cctv.cctvId)
+                if(isInSelected){
+                    return [...acct]
+                } else {
+                    return [...acct, cctv]
+                }
+            },[])
+            setCCTVsNotSelectedArray(cctvNotSelectedByLatest);
+        })
+        .catch(err => {
+            alert('failed to get cctv data.')
+        })
+        // initialize changed status.
+        setChanged(false);
+    },[open])
 
     const checkedInSelected = checkedCCTVId && cctvsSelected.some(cctv => cctv.cctvId === checkedCCTVId);
     const allCCTVs = React.useMemo(() => {
@@ -73,6 +81,17 @@ const ConfigDialog = props => {
     },[cctvsNotSelected, cctvsSelected])
 
     console.log('re-render filter :', columnItems, preload)
+
+    const onClickSaveBtn = React.useCallback(() => {
+        axios.put('/extUrl/save', allCCTVs)
+        .then((res) => {
+            setChanged(false)
+        })
+        .catch((err) => {
+            alert('failed to save cctv data. try again.')
+        })
+
+    },[allCCTVs])
 
     const onCloseFilterDialog = () => {
         setDialogOpen(false);
@@ -149,22 +168,6 @@ const ConfigDialog = props => {
                     <Box display="flex" flexDirection="row">
                         {optionTitle}
                         <Box style={{marginLeft:'auto'}}>
-                            {/* {!groupByArea && !displayGrid &&
-                            <FormControlLabel 
-                                control={<Checkbox color="primary" size="small" checked={preload} onChange={handleChangePreload} />} 
-                                label="미리보기" 
-                            />
-                            }
-                            {!displayGrid &&
-                            <FormControlLabel 
-                                control={<Checkbox color="primary" size="small" checked={groupByArea} onChange={handleChange} />} 
-                                label="지역별로 묶기" 
-                            />
-                            }
-                            <FormControlLabel 
-                                control={<Checkbox color="primary" size="small" checked={displayGrid} onChange={handleChangeDisplayGrid} />} 
-                                label="분할화면" 
-                            /> */}
                         </Box>
                         {displayGrid && 
                             <RadioGroup
@@ -203,6 +206,7 @@ const ConfigDialog = props => {
                                     checkedCCTVId={checkedCCTVId}
                                     setCheckedCCTVId={setCheckedCCTVId}
                                     setCCTVs={methods[columnName]}
+                                    setChanged={setChanged}
                                 >
                                 </Column>
                             ))}
@@ -215,7 +219,21 @@ const ConfigDialog = props => {
                     checkedInSelected={checkedInSelected}
                     setCCTVsSelectedArray={setCCTVsSelectedAray}
                     setCCTVsNotSelectedArray={setCCTVsNotSelectedArray} 
+                    setChanged={setChanged}
                 ></AddManualUrl>
+                <Button
+                    variant="contained" 
+                    size="small"
+                    disabled={disableSaveBtn}
+                    sx={{
+                        marginLeft: '20px',
+                        marginRight: '20px',
+                        marginBottom: '10px'
+                    }}
+                    onClick={onClickSaveBtn}
+                >
+                    Save Change
+                </Button>
             </Dialog>
         </DragDropContext>
     )

@@ -33,7 +33,8 @@ const DragItem = props => {
         index, 
         checked=false,
         setChecked,
-        setCCTVs
+        setCCTVs,
+        setChanged
     } = props;
     const stringId = id.toString();
     const {colorDefault='grey', colorDragging='royalblue'} = props;
@@ -46,7 +47,8 @@ const DragItem = props => {
         setCCTVs(cctvs => {
             return remove(cctvs).fromIndex(index)
         })
-    },[index, setCCTVs])
+        setChanged(true);
+    },[index, setCCTVs, setChanged])
     
     return (
         <Draggable key={id} draggableId={stringId} index={index}>
