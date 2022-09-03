@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import styled from 'styled-components';
 import HLSPlayer from './HLSPlayer';
 import {replace} from './lib/arrayUtil';
+import { SmallMarginTextField } from './template/smallComponents';
 
 const Container = styled.div`
   /* margin-left: 15px; */
@@ -20,7 +21,23 @@ const SubContainer = styled.div`
   padding-top: 0px;
   justify-content: space-between;
 `;
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`
+const CustomTextField = styled(TextField)`
+  width: ${props => props.width || "100px"};
+  .MuiInputBase-input {
+    font-size: ${props => props.fontSize || "12px"};
+    width: ${props => props.width || "100px"};
+  }
+`
 
+const DEFAULT_LAT = 37.52803;
+const DEFAULT_LNG = 126.87332;
+const DEFAULT_MAP_LEVEL = 9;
 
 function AddManualUrl(props) {
   const {
@@ -33,7 +50,9 @@ function AddManualUrl(props) {
   } = props;
   const [url, setUrl] = React.useState('');
   const [title, setTitle] = React.useState('');
-  // const titleRef = React.useRef('');
+  const [lat, setLAT] = React.useState(DEFAULT_LAT)
+  const [lng, setLNG] = React.useState(DEFAULT_LNG);
+  const [mapLevel, setMapLevel] = React.useState(DEFAULT_MAP_LEVEL);
 
   React.useEffect(() => {
     if(checkedCCTVId){
@@ -41,10 +60,16 @@ function AddManualUrl(props) {
       if(checkedCCTV){
         setUrl(checkedCCTV.url || 'https://localhost');
         setTitle(checkedCCTV.title || '');
+        setLAT(checkedCCTV.lat || DEFAULT_LAT);
+        setLNG(checkedCCTV.lng || DEFAULT_LNG);
+        setMapLevel(checkedCCTV.mapLevel || DEFAULT_MAP_LEVEL);
       }
     } else {
       setUrl('https://-');
       setTitle('');
+      setLAT(DEFAULT_LAT);
+      setLNG(DEFAULT_LNG);
+      setMapLevel(DEFAULT_MAP_LEVEL);
     }
   },[allCCTVs, checkedCCTVId])
 
@@ -64,6 +89,15 @@ function AddManualUrl(props) {
 
   const setTitleValue = React.useCallback((event) => {
     setTitle(event.target.value);
+  },[])
+  const setLATValue = React.useCallback((event) => {
+    setLAT(parseFloat(event.target.value));
+  },[])
+  const setLNGValue = React.useCallback((event) => {
+    setLNG(parseFloat(event.target.value));
+  },[])
+  const setMapLevelValue = React.useCallback((event) => {
+    setMapLevel(parseInt(event.target.value));
   },[])
 
   const onDragOver = React.useCallback((event) => {
@@ -86,7 +120,10 @@ function AddManualUrl(props) {
           return replace(cctvs).index(targetIndex).value({
             ...cctvs[targetIndex],
             url,
-            title
+            title,
+            lat,
+            lng,
+            mapLevel
           })
         })
         setChanged(true);
@@ -97,7 +134,10 @@ function AddManualUrl(props) {
           return replace(cctvs).index(targetIndex).value({
             ...cctvs[targetIndex],
             url,
-            title
+            title,
+            lat,
+            lng,
+            mapLevel
           })
         })
         setChanged(true);
@@ -113,6 +153,9 @@ function AddManualUrl(props) {
     const newCCTV = {
       url,
       title,
+      lng,
+      lat,
+      mapLevel,
       cctvId: Date.now(),
       num: Date.now()
     } 
@@ -120,7 +163,7 @@ function AddManualUrl(props) {
       return [...cctvs, newCCTV]
     })
     setChanged(true);
-  },[checkedCCTVId, allCCTVs, url, title, setCCTVsNotSelectedArray, checkedInSelected, setCCTVsSelectedArray])
+  },[checkedCCTVId, allCCTVs, url, title, lng, lat, mapLevel, setCCTVsNotSelectedArray, setChanged, checkedInSelected, setCCTVsSelectedArray])
 
   return (
     <Container onDragOver={onDragOver} onDrop={onDrop}>
@@ -134,7 +177,12 @@ function AddManualUrl(props) {
           ></HLSPlayer>
         </Box>
         <SubContainer>
-          <TextField onChange={setTitleValue} value={title} label="Title" variant="outlined" size="small"></TextField>
+          <TitleContainer>
+            <TextField onChange={setTitleValue} value={title} label="Title" variant="outlined" size="small"></TextField>
+            <CustomTextField onChange={setLATValue} value={lat} width="100px" label="LAT" variant="outlined" size="small"></CustomTextField>
+            <CustomTextField onChange={setLNGValue} value={lng} label="LNG" variant="outlined" size="small"></CustomTextField>
+            <CustomTextField onChange={setMapLevelValue} value={mapLevel} label="MAP level" variant="outlined" size="small"></CustomTextField>
+          </TitleContainer>
           <TextField fullWidth onChange={onChangeUrl} value={url} label="Url" variant="outlined" size="small"></TextField>
           <Button onClick={onClickAdd}>{checkedCCTVId ? "Update":"Add"}</Button>
         </SubContainer>

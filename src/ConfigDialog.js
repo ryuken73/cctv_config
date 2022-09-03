@@ -80,7 +80,10 @@ const ConfigDialog = props => {
     console.log('re-render filter :', columnItems, preload)
 
     const onClickSaveBtn = React.useCallback(() => {
-        axios.put('/extUrl/save', allCCTVs)
+        const extTagAdded = allCCTVs.map(cctv => {
+            return {...cctv, external: true};
+        })
+        axios.put('/extUrl/save', extTagAdded)
         .then((res) => {
             setChanged(false)
         })
